@@ -1,29 +1,28 @@
 #pragma once
 
 #include "GLOBAL.h"
-#include "Teacher.h"
+#include "NodeData.h"
 #include "Node.h"
+#include "Filter.h"
 
-#define NameSorter 1
-#define PhoneSorter 2
-#define RoleSorter 3
-#define InstituteSorter 4
-#define ExitSorter 0
+#define SORT_BY_NAME 1
+#define SORT_BY_PHONE 2
+#define SORT_BY_ROLE 3
+#define SORT_BY_INSTITUTE 4
+#define EXIT_SORTER 0
 
 #define SortByASC 1
 #define SortByDESC -1
 
-typedef int (*CompareFunction)(struct Teacher*, struct Teacher*);
-void SelectSort(struct Node* list[FILTER_RESULT_SIZE], int order_by, CompareFunction);
+typedef int (*__Sorter_CompareFunction)(struct NodeData* a, struct NodeData* b);
+void _Sorter_SelectSort(struct Node* list[FILTER_RESULT_SIZE], int order_by, __Sorter_CompareFunction compare_func);
 
-int SortFilterResultWithName(struct Teacher* a, struct Teacher* b);
+int _Sorter_SortWithName(struct NodeData* a, struct NodeData* b);
 
-int SortFilterResultWithPhone(struct Teacher* a, struct Teacher* b);
+int _Sorter_SortWithPhone(struct NodeData* a, struct NodeData* b);
 
-int SortFilterResultWithRole(struct Teacher* a, struct Teacher* b);
+int _Sorter_SortWithRole(struct NodeData* a, struct NodeData* b);
 
-int SortFilterResultWithInstitute(struct Teacher* a, struct Teacher* b);
+int _Sorter_SortWithInstitute(struct NodeData* a, struct NodeData* b);
 
-size_t CountFilterResultActualLength(struct Node* list[FILTER_RESULT_SIZE]);
-
-void SortFilterResult(struct Node* list[FILTER_RESULT_SIZE]);
+void Sorter(struct Node* list[FILTER_RESULT_SIZE]);

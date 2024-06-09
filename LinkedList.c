@@ -2,205 +2,362 @@
 
 const size_t LINKED_LIST_SIZE = sizeof(struct LinkedList);
 
-void PrintLinkedList(struct LinkedList* list)
+void _LinkedList_PrintAllNodeInConsole(const struct LinkedList *self)
 {
-	if (list == NULL)
+	if (self == NULL)
 	{
 #ifdef _DEBUG
-		DEBUG_PRINT("传入了空指针...\n");
+		DEBUG_PRINT("be careful: self is NULL.\n");
 #endif
 		return;
 	}
 
-	struct Node* head = list->head;
+	if (self->length == 0)
+		return;
 
-	printf("\n\n\n");
-	while (head != NULL)
+	ClearConsole();
+	struct Node *node = self->head;
+	while (node != NULL)
 	{
-		PrintNode(head, '\t');
-		head = head->next;
+		if (node->data == NULL)
+			continue;
+		PrintNodeDataInConsole(node->data, '\t');
+		node = node->next;
 	}
-	printf("\n\n\n");
+	printf("\n");
 }
 
-void Add(struct LinkedList* list)
+struct Node *_LinkedList_GetNodeWithIndex(struct LinkedList *self, size_t index)
 {
-	if (list == NULL)
+	if (self == NULL)
 	{
 #ifdef _DEBUG
-		DEBUG_PRINT("传入了空指针...\n");
+		DEBUG_PRINT("be careful: self is NULL.\n");
+#endif
+		return NULL;
+	}
+
+	if (index >= self->length)
+	{
+#ifdef _DEBUG
+		DEBUG_PRINT("be careful: INDEX out of range.\n");
+#endif
+		return NULL;
+	}
+
+	if (index == 0)
+	{
+		return self->head;
+	}
+
+	if (index == self->length - 1)
+	{
+		return self->tail;
+	}
+
+	struct Node *target_node = self->head;
+	while (--index)
+	{
+		target_node = target_node->next;
+	}
+
+	return target_node;
+}
+
+struct Node *_LinkedList_GetFirstNode(struct LinkedList *self)
+{
+	return self->head;
+}
+
+struct Node *_LinkedList_GetLastNode(struct LinkedList *self)
+{
+	return self->tail;
+}
+
+void _LinkedList_PushFrontNode(struct LinkedList *self, struct Node *node)
+{
+	if (self == NULL || node == NULL)
+	{
+#ifdef _DEBUG
+		DEBUG_PRINT("be careful: self or node is NULL.\n");
 #endif
 		return;
 	}
 
-	struct Teacher* teacher = CreateTeacher();
-	if (teacher == NULL)
+	node->prev = NULL;
+
+	if (self->head == NULL)
+	{
+		node->next = NULL;
+		self->head = node;
+		self->tail = node;
+	}
+	else
+	{
+		node->next = self->head;
+		self->head->prev = node;
+		self->head = node;
+	}
+
+	self->length += 1;
+}
+
+void _LinkedList_PushBackNode(struct LinkedList *self, struct Node *node)
+{
+	if (self == NULL || node == NULL)
 	{
 #ifdef _DEBUG
-		DEBUG_PRINT("申请内存失败...\n");
+		DEBUG_PRINT("be careful: self or node is NULL.\n");
 #endif
 		return;
 	}
 
-	printf("========== 添加数据 ==========\n");
-	struct Node* node = CreateNode(teacher, NULL, NULL);
-	node->prev = list->tail;
-	list->tail->next = node;
-	list->tail = node;
-	++(list->length);
+	node->next = NULL;
+	if (self->tail == NULL)
+	{
+		node->prev = NULL;
+		self->head = node;
+		self->tail = node;
+	}
+	else
+	{
+		self->tail->next = node;
+		node->prev = self->tail;
+		self->tail = node;
+	}
+
+	self->length += 1;
 }
 
-void Remove(struct LinkedList* list)
+void _LinkedList_InsertNodeAtIndex(struct LinkedList *self, struct Node *node, size_t index)
 {
-	if (list == NULL)
+	if (self == NULL || node == NULL)
 	{
 #ifdef _DEBUG
-		DEBUG_PRINT("传入了空指针...\n");
+		DEBUG_PRINT("be careful: self or node is NULL.\n");
 #endif
 		return;
 	}
 
-	struct Node* result_list[FILTER_RESULT_SIZE] = { NULL };
-	FullFilter(list, result_list);
-
-	while (1)
-	{
-		CONSOLE_CLEAR
-		PrintFilterList("筛选结果:\n", result_list);
-		if (!CmdConfirm("是否继续筛选？")) break;
-		IncrementalFilter(result_list);
-	}
-
-	CONSOLE_CLEAR
-	PrintFilterList("筛选结果:\n", result_list);
-	if (!CmdConfirm("删除以上数据？")) return;
-
-	struct Node* node = NULL;
-	struct Node* dead_node = NULL;
-	for (size_t i = 0; i < FILTER_RESULT_SIZE; ++i)
-	{
-		if (result_list[i] == NULL) continue;
-
-		node = result_list[i];
-		if (node == list->tail)
-		{
-			list->tail = list->tail->prev;
-			list->tail->next = NULL;
-			dead_node = node;
-			node = node->next;
-			DestroyNode(dead_node);
-			dead_node = NULL;
-		}
-		else
-		{
-			node->prev->next = node->next;
-			node->next->prev = node->prev;
-			dead_node = node;
-			node = node->next;
-			DestroyNode(dead_node);
-			dead_node = NULL;
-		}
-		--(list->length);
-	}
-
-	printf("删除完成\n");
-	CONSOLE_PAUSE
-	CONSOLE_CLEAR
-}
-
-void Update(struct LinkedList* list)
-{
-	if (list == NULL)
+	if (index >= self->length)
 	{
 #ifdef _DEBUG
-		DEBUG_PRINT("传入了空指针...\n");
+		DEBUG_PRINT("be careful: INDEX out of range.\n");
 #endif
 		return;
 	}
 
-	struct Node* result_list[FILTER_RESULT_SIZE] = { NULL };
-	FullFilter(list, result_list);
-
-	while (1)
+	if (index == 0)
 	{
-		CONSOLE_CLEAR
-		PrintFilterList("筛选结果:\n", result_list);
-		if (!CmdConfirm("是否继续筛选？")) break;
-		IncrementalFilter(result_list);
+		self->PushFrontNode(self, node);
+		return;
 	}
 
-	CONSOLE_CLEAR
-	PrintFilterList("筛选结果:\n", result_list);
-	if (!CmdConfirm("更新以上数据？")) return;
-
-	for (size_t i = 0; i < FILTER_RESULT_SIZE; ++i)
+	if (index == self->length - 1)
 	{
-		if (result_list[i] == NULL) continue;
-		UpdateTeacher(result_list[i]->data);
+		self->PushBackNode(self, node);
+		return;
 	}
 
-	CONSOLE_CLEAR
+	struct Node *tmp_node = self->head;
+	while (--index)
+	{
+		tmp_node = tmp_node->next;
+	}
+
+	struct Node *prev = tmp_node->prev;
+	struct Node *next = tmp_node->next;
+	node->prev = prev;
+	node->next = next;
+	prev->next = node;
+	next->prev = node;
+	self->length += 1;
 }
 
-void Query(struct LinkedList* list)
+void _LinkedList_RemoveFirstNode(struct LinkedList *self)
 {
-	if (list == NULL)
+	if (self == NULL)
 	{
 #ifdef _DEBUG
-		DEBUG_PRINT("传入了空指针...\n");
+		DEBUG_PRINT("be careful: self is NULL.\n");
 #endif
 		return;
 	}
 
-	struct Node* result_list[FILTER_RESULT_SIZE] = { NULL };
-	FullFilter(list, result_list);
-	CONSOLE_CLEAR
-	PrintFilterList("查询结果:\n", result_list);
+	if (self->head == NULL)
+		return;
 
-	while (CmdConfirm("针对以上数据进行筛选？"))
+	struct Node *first_node = self->head;
+	self->head = first_node->next;
+	if (self->head == NULL)
 	{
-		IncrementalFilter(result_list);
-		CONSOLE_CLEAR
-		PrintFilterList("筛选结果:\n", result_list);
+		self->tail = NULL;
+	}
+	else
+	{
+		// head.prev must be NULL
+		self->head->prev = NULL;
 	}
 
-	while (CmdConfirm("对以上数据进行排序？"))
-	{
-		SortFilterResult(result_list);
-		CONSOLE_CLEAR
-		PrintFilterList("排序结果:\n", result_list);
-	}
+	DestroyNode(first_node);
+	self->length -= 1;
 }
 
-struct LinkedList* CreateLinkedList(void)
+void _LinkedList_RemoveLastNode(struct LinkedList *self)
 {
-	struct LinkedList* data = (struct LinkedList*)malloc(LINKED_LIST_SIZE);
-	if (data == NULL) {
+	if (self == NULL)
+	{
 #ifdef _DEBUG
-		DEBUG_PRINT("申请内存失败\n")
-#endif // _DEBUG
-			return NULL;
+		DEBUG_PRINT("be careful: self is NULL.\n");
+#endif
+		return;
 	}
 
-	struct Node* head = CreateNode(NULL, NULL, NULL);
-	data->head = head;
-	data->tail = head;
-	data->length = 0;
-	return data;
+	if (self->tail == NULL)
+		return;
+
+	struct Node *last_node = self->tail;
+	self->tail = last_node->prev;
+	if (last_node->prev == NULL)
+	{
+		self->head = NULL;
+		self->tail = NULL;
+	}
+	else
+	{
+		// tail.next must be NULL
+		self->tail->next = NULL;
+	}
+
+	DestroyNode(last_node);
+	self->length -= 1;
 }
 
-void DestroyLinkedList(struct LinkedList* list)
+void _LinkedList_RemoveNodeAtIndex(struct LinkedList *self, size_t index)
+{
+	if (self == NULL)
+	{
+#ifdef _DEBUG
+		DEBUG_PRINT("be careful: self is NULL.\n");
+#endif
+		return;
+	}
+
+	if (index >= self->length)
+	{
+#ifdef _DEBUG
+		DEBUG_PRINT("be careful: INDEX out of range.\n");
+#endif
+		return;
+	}
+
+	if (index == 0)
+	{
+		self->RemoveFirstNode(self);
+		return;
+	}
+
+	if (index == self->length - 1)
+	{
+		self->RemoveLastNode(self);
+		return;
+	}
+
+	struct Node *tmp_node = self->head;
+	while (--index)
+	{
+		tmp_node = tmp_node->next;
+	}
+
+	struct Node *prev = tmp_node->prev;
+	struct Node *next = tmp_node->next;
+	prev->next = next;
+	next->prev = prev;
+
+	tmp_node->prev = NULL;
+	tmp_node->next = NULL;
+	DestroyNode(tmp_node);
+	self->length -= 1;
+}
+
+void _LinkedList_RemoveNode(struct LinkedList *self, struct Node *node)
+{
+	if (self == NULL || node == NULL)
+	{
+#ifdef _DEBUG
+		DEBUG_PRINT("be careful: self or node is NULL.\n");
+#endif
+		return;
+	}
+
+	if (node == self->head)
+	{
+		self->RemoveFirstNode(self);
+		return;
+	}
+
+	if (node == self->tail)
+	{
+		self->RemoveLastNode(self);
+		return;
+	}
+
+	struct Node *prev = node->prev;
+	struct Node *next = node->next;
+	prev->next = next;
+	next->prev = prev;
+
+	node->prev = NULL;
+	node->next = NULL;
+	DestroyNode(node);
+	self->length -= 1;
+}
+
+struct LinkedList *LinkedListConstructor(void)
+{
+	struct LinkedList *list = malloc(LINKED_LIST_SIZE);
+	if (list == NULL)
+	{
+#ifdef _DEBUG
+		DEBUG_PRINT("be careful: MEMORY allocation failed.\n");
+#endif
+		return NULL;
+	}
+
+	list->head = NULL;
+	list->tail = NULL;
+	list->length = 0;
+
+	list->PrintAllNodeInConsole = _LinkedList_PrintAllNodeInConsole;
+
+	list->InsertNodeAtIndex = _LinkedList_InsertNodeAtIndex;
+	list->PushFrontNode = _LinkedList_PushFrontNode;
+	list->PushBackNode = _LinkedList_PushBackNode;
+
+	list->RemoveNode = _LinkedList_RemoveNode;
+	list->RemoveNodeAtIndex = _LinkedList_RemoveNodeAtIndex;
+	list->RemoveFirstNode = _LinkedList_RemoveFirstNode;
+	list->RemoveLastNode = _LinkedList_RemoveLastNode;
+
+	list->GetNodeWithIndex = _LinkedList_GetNodeWithIndex;
+	list->GetFirstNode = _LinkedList_GetFirstNode;
+	list->GetLastNode = _LinkedList_GetLastNode;
+
+	return list;
+}
+
+void LinkedListDestructor(struct LinkedList *list)
 {
 	if (list == NULL)
 	{
 #ifdef _DEBUG
-		DEBUG_PRINT("传入了空指针...\n");
-#endif // _DEBUG
+		DEBUG_PRINT("be careful: list is NULL\n");
+#endif
 		return;
 	}
 
-	struct Node* node = list->head->next;
-	struct Node* dead_node = NULL;
+	struct Node *node = list->head;
+	struct Node *dead_node = NULL;
 	while (node != NULL)
 	{
 		if (node == list->tail)
@@ -223,9 +380,25 @@ void DestroyLinkedList(struct LinkedList* list)
 		--(list->length);
 	}
 
-	DestroyNode(list->head);
 	list->head = NULL;
 	list->tail = NULL;
+	list->length = 0;
+
+	list->PrintAllNodeInConsole = NULL;
+
+	list->InsertNodeAtIndex = NULL;
+	list->PushFrontNode = NULL;
+	list->PushBackNode = NULL;
+
+	list->RemoveNode = NULL;
+	list->RemoveNodeAtIndex = NULL;
+	list->RemoveFirstNode = NULL;
+	list->RemoveLastNode = NULL;
+
+	list->GetNodeWithIndex = NULL;
+	list->GetFirstNode = NULL;
+	list->GetLastNode = NULL;
+
 	free(list);
 	list = NULL;
 }

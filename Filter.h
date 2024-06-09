@@ -5,8 +5,11 @@
 #include <string.h>
 
 #include "GLOBAL.h"
-#include "Node.h"
 #include "LinkedList.h"
+#include "Node.h"
+
+// C4115: 'LinkedList': named type definition in parentheses
+struct LinkedList;
 
 union FilterValue
 {
@@ -22,10 +25,12 @@ union FilterValue
 #define InstituteFilter 4
 #define ExitFilter 0
 
-void GetFilterCondition(union FilterValue* filter_value, int* filter_type);
+void GetFilterConditionFromConsoleInput(union FilterValue* filter_value, int* filter_type);
 
 void FullFilter(struct LinkedList* list, struct Node* result_list[FILTER_RESULT_SIZE]);
 
 void IncrementalFilter(struct Node* list[FILTER_RESULT_SIZE]);
 
-void PrintFilterList(const char* motd, struct Node* list[FILTER_RESULT_SIZE]);
+void PrintFilteredResultsInConsole(const char* motd, struct Node* list[FILTER_RESULT_SIZE]);
+
+size_t GetFilteredResultsLength(struct Node* list[FILTER_RESULT_SIZE]);

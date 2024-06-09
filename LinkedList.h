@@ -1,40 +1,62 @@
 ﻿#pragma once
-#pragma warning(disable:4996)
+#pragma warning(disable : 4996)
 
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdlib.h>
 
 #include "GLOBAL.h"
+#include "NodeData.h"
 #include "Node.h"
-#include "Teacher.h"
 #include "Filter.h"
 #include "Sorter.h"
 
 struct LinkedList
 {
 	size_t length;
-	struct Node* head;
-	struct Node* tail;
+	struct Node *head;
+	struct Node *tail;
+
+	void (*PrintAllNodeInConsole)(const struct LinkedList *self);
+
+	struct Node *(*GetNodeWithIndex)(struct LinkedList *self, size_t index);
+	struct Node *(*GetFirstNode)(struct LinkedList *self);
+	struct Node *(*GetLastNode)(struct LinkedList *self);
+
+	void (*PushFrontNode)(struct LinkedList *self, struct Node *node);
+	void (*PushBackNode)(struct LinkedList *self, struct Node *node);
+	void (*InsertNodeAtIndex)(struct LinkedList* self, struct Node* node, size_t index);
+
+	void (*RemoveFirstNode)(struct LinkedList *self);
+	void (*RemoveLastNode)(struct LinkedList *self);
+	void (*RemoveNodeAtIndex)(struct LinkedList *self, size_t index);
+	void (*RemoveNode)(struct LinkedList *self, struct Node *node);
 };
 
 extern const size_t LINKED_LIST_SIZE;
 
-// 遍历打印节点
-void PrintLinkedList(struct LinkedList* list);
+void _LinkedList_PrintAllNodeInConsole(const struct LinkedList *self);
 
-// 添加节点
-void Add(struct LinkedList* list);
+struct Node *_LinkedList_GetNodeWithIndex(struct LinkedList *self, size_t index);
 
-// 删除节点
-void Remove(struct LinkedList* list);
+struct Node *_LinkedList_GetFirstNode(struct LinkedList *self);
 
-// 更新节点
-void Update(struct LinkedList* list);
+struct Node *_LinkedList_GetLastNode(struct LinkedList *self);
 
-// 查找节点
-void Query(struct LinkedList* list);
+void _LinkedList_PushFrontNode(struct LinkedList *self, struct Node *node);
 
-struct LinkedList* CreateLinkedList(void);
+void _LinkedList_PushBackNode(struct LinkedList *self, struct Node *node);
 
-void DestroyLinkedList(struct LinkedList* list);
+void _LinkedList_InsertNodeAtIndex(struct LinkedList *self, struct Node *node, size_t index);
+
+void _LinkedList_RemoveFirstNode(struct LinkedList *self);
+
+void _LinkedList_RemoveLastNode(struct LinkedList *self);
+
+void _LinkedList_RemoveNodeAtIndex(struct LinkedList *self, size_t index);
+
+void _LinkedList_RemoveNode(struct LinkedList *self, struct Node *node);
+
+struct LinkedList *LinkedListConstructor(void);
+
+void LinkedListDestructor(struct LinkedList *list);
