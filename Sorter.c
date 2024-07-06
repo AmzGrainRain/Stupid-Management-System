@@ -13,7 +13,7 @@ void _Sorter_SelectSort(struct Node* list[FILTER_RESULT_SIZE], int order_by, __S
 	size_t actual_size = GetFilteredResultsLength(list);
 	if (actual_size <= 0) return;
 
-	struct Node* tmp = NULL;
+    struct Node *tmp = NULL;
 	size_t outer_loop_max_value = actual_size - 1;
 	size_t t = 0;
 	for (size_t i = 0; i < outer_loop_max_value; ++i) {

@@ -7,7 +7,7 @@ int main(void)
 {
 	struct LinkedList* list = LinkedListConstructor();
 
-	printf("é“¾è¡¨å·²å‡†å¤‡å¥½ï¼Œå¯ä»¥å¼€å§‹æµ‹è¯•...\n\n\n");
+	printf("Á´±íÒÑ×¼±¸ºÃ£¬¿ÉÒÔ¿ªÊ¼²âÊÔ...\n\n\n");
 	PauseConsole();
 
 	while (1)
@@ -18,16 +18,16 @@ int main(void)
 			list->PushBackNode(list, CreateNode(nd, NULL, NULL));
 		}
 		int c = -1;
-		printf("è¾“å…¥ 1 ç»§ç»­ç”³è¯·å†…å­˜, è¾“å…¥ 0 ç»ˆæ­¢å¾ªç¯.\n");
+		printf("ÊäÈë 1 ¼ÌĞøÉêÇëÄÚ´æ, ÊäÈë 0 ÖÕÖ¹Ñ­»·.\n");
 		scanf_s("%d", &c);
 		if (c == 0) break;
 	}
 
-	printf("å·²å‡†å¤‡å¥½é‡Šæ”¾æ‰€æœ‰èŠ‚ç‚¹\n\n\n");
+	printf("ÒÑ×¼±¸ºÃÊÍ·ÅËùÓĞ½Úµã\n\n\n");
 	PauseConsole();
 
 	LinkedListDestructor(list);
-	printf("å†…å­˜é‡Šæ”¾å®Œæ¯•.\n");
+	printf("ÄÚ´æÊÍ·ÅÍê±Ï.\n");
 	PauseConsole();
 
 	_CrtDumpMemoryLeaks();

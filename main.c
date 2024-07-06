@@ -1,5 +1,6 @@
 ﻿#define USE_TEST_DATA
 
+#include "Compatibility.h"
 #include "GLOBAL.h"
 #include "LinkedList.h"
 
@@ -168,5 +169,6 @@ int main(void)
 	}
 
 	LinkedListDestructor(list);
+
 	return 0;
 }

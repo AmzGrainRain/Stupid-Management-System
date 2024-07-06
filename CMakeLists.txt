@@ -18,6 +18,7 @@ add_executable(${PROJECT_NAME}
 	Filter.c
 	Sorter.h
 	Sorter.c
+	Compatibility.h
 )
 
 add_executable(test
