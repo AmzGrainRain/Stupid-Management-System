@@ -3,8 +3,8 @@
 
 #include "GLOBAL.h"
 
-extern size_t CreatedNode = 0;
-extern size_t AllocatedMemory = 0;
+size_t CreatedNode = 0;
+size_t AllocatedMemory = 0;
 
 void ClearConsole(void)
 {
