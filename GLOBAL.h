@@ -10,8 +10,8 @@
 // 搜索结果列表的大小
 #define FILTER_RESULT_SIZE 500
 
-size_t CreatedNode;     // 创建的节点总数
-size_t AllocatedMemory; // 占用的内存大小
+extern size_t CreatedNode;     // 创建的节点总数
+extern size_t AllocatedMemory; // 占用的内存大小
 
 void ClearConsole(void);
 
