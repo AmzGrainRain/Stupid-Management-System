@@ -2,36 +2,14 @@ cmake_minimum_required(VERSION 3.16)
 
 project(StudentManager C)
 
-add_compile_options()
-
-add_executable(${PROJECT_NAME}
-	main.c
-	GLOBAL.h
-	GLOBAL.c
-	NodeData.h
-	NodeData.c
-	Node.h
-	Node.c
-	LinkedList.h
-	LinkedList.c
-	Filter.h
-	Filter.c
-	Sorter.h
-	Sorter.c
-	Compatibility.h
+file(GLOB_RECURSE SRC_LIST
+	*.h
+ 	*.c
 )
+list(REMOVE_ITEM ${SRC_LIST} main.c test.c)
 
-add_executable(test
-	test.c
-	GLOBAL.h
-	GLOBAL.c
-	NodeData.h
-	NodeData.c
-	Node.h
-	Node.c
-	LinkedList.h
-	LinkedList.c
-)
+add_executable(${PROJECT_NAME} main.c ${SRC_LIST})
+add_executable(test_${PROJECT_NAME} test.c ${SRC_LIST})
 
 if(MSVC)
     add_compile_options(/W4 /WX)
